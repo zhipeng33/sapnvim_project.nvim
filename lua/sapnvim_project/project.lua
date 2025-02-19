@@ -15,7 +15,7 @@ function M.create_project()
       local new_session = { name = input, path = cwd }
       session_manager.add_session(new_session)
     else
-      vim.notify("Session name input was cancelled", vim.log.levels.WARN)
+      vim.notify("Project name input was cancelled", vim.log.levels.WARN)
     end
   end)
 end

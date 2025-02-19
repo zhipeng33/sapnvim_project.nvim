@@ -11,6 +11,7 @@ local action_state = require('telescope.actions.state')
 local entry_display = require("telescope.pickers.entry_display")
 
 local session_manager = require('sapnvim_project.session_manager')
+local utils = require('sapnvim_project.utils.path')
 
 local function create_finder()
   local sessions = session_manager.get_all_sessions() or {}
@@ -33,11 +34,10 @@ local function create_finder()
   return finders.new_table({
     results = sessions,
     entry_maker = function(entry)
-      -- local name = vim.fn.fnamemodify(entry, ":t")
       return {
         display = make_display,
         name = entry.name,
-        value = vim.fn.fnamemodify(entry.path, ':~'),
+        value = utils.format_path(entry.path),
         ordinal = entry.name .. " " .. entry.path,
       }
     end

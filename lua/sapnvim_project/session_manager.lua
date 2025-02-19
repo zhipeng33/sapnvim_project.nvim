@@ -30,9 +30,8 @@ local function write_sessions_to_file()
   if file then
     file:write(file_content)
     file:close()
-    vim.notify("已成功写入 " .. sessions_data_file .. " 文件。")
   else
-    vim.notify("无法打开 " .. sessions_data_file .. " 文件进行写入。")
+    vim.notify("Cannot open " .. sessions_data_file .. " file for writing.", vim.log.levels.ERROR)
   end
 end
 
@@ -45,20 +44,9 @@ local function session_exists_in_cache(new_session)
   return false
 end
 
--- 添加新的 session，并同时触发保存 session 文件的操作，
--- 同时执行保存 session 的 vim.cmd 以及通知
-function M.add_session(new_session)
-  load_sessions_from_file() -- 先加载现有的 sessions
-  local sessions_name = config.options.sessions_storage_dir .. new_session.name
-  vim.notify(string.format("mks! %s", sessions_name))
-  vim.cmd(string.format("mks! %s", sessions_name))
-  if session_exists_in_cache(new_session) then
-    vim.notify("该 session 已存在，不重复添加。")
-    return
-  end
-  table.insert(sessions_table, new_session)
-  write_sessions_to_file()
-  -- 调用 Neovim 命令保存当前 session 文件
+local function is_valid_path(path)
+  path = utils.resolve(path)
+  return vim.fn.isdirectory(path)
 end
 
 -- 可选：获取当前所有会话记录
@@ -66,9 +54,38 @@ function M.get_all_sessions()
   return load_sessions_from_file()
 end
 
+-- 添加新的 session，并同时触发保存 session 文件的操作，
+-- 同时执行保存 session 的 vim.cmd 以及通知
+function M.add_session(new_session)
+  load_sessions_from_file() -- load sessions
+
+  local sessions_name = config.options.sessions_storage_dir .. new_session.name
+  vim.cmd(string.format("mks! %s", sessions_name))
+
+  if session_exists_in_cache(new_session) then
+    return
+  end
+  table.insert(sessions_table, new_session)
+  write_sessions_to_file()
+end
+
 function M.execute_session(selected_session)
-  vim.cmd([[%bd]])
-  vim.cmd(string.format("source %s%s", config.defaults.sessions_storage_dir, selected_session.name))
+  -- Close all buffers.
+  vim.cmd('%bd')
+
+  -- Cache session values for clarity.
+  local session_path = selected_session.value
+  local session_name = selected_session.name
+
+  -- Check if the provided session path is valid.
+  if is_valid_path(session_path) == 1 then
+    -- Build the full path to the session file and source it.
+    local session_file = config.defaults.sessions_storage_dir .. session_name
+    vim.cmd(string.format("source %s", session_file))
+  else
+    local msg = string.format('"%s" is not a valid path; project information has been deleted!', session_path)
+    vim.notify(msg, vim.log.levels.WARN)
+  end
 end
 
 return M
