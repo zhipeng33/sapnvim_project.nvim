@@ -16,7 +16,7 @@ local utils = require('sapnvim_project.utils.path')
 local function create_finder()
   local sessions = session_manager.get_all_sessions() or {}
   if sessions == nil then
-    vim.notify("Error: Failed to get the file name of the telescope results.")
+    vim.notify("Error: Failed to get the file name of the telescope results.", vim.log.levels.ERROR)
   end
 
   local displayer = entry_display.create({

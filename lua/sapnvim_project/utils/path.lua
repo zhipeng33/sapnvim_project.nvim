@@ -13,6 +13,11 @@ function M.cwd()
   return M.format_path(vim.uv.cwd())
 end
 
+function M.is_valid_path(path)
+  path = M.resolve(path)
+  return vim.fn.isdirectory(path)
+end
+
 function M.add_slash_if_folder(path)
   local path_info = vim.uv.fs_stat(path)
   if path_info and path_info.type == 'directory' and not path:match('/$') then
