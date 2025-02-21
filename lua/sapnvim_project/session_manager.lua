@@ -36,7 +36,9 @@ local sessions_table = {}
 --- If successful and the loaded result is a table containing a "sessions" field,
 --- then sessions_table is updated accordingly. Otherwise, sessions_table is reset to an empty table.
 ---
----@return table A table containing session records.
+---@return { name: string, path: string }[] sessions_table A table containing session records, where each record is a table with keys:
+---        - name (string): the session name.
+---        - path (string): the session path.
 local function load_sessions_from_file()
   local ok, result = pcall(dofile, sessions_data_file)
   if ok and type(result) == "table" and result.sessions then
@@ -52,15 +54,17 @@ end
 ---
 --- This converts the sessions array into a string that can be written to a file and later loaded with dofile.
 ---
----@param sessions table A table containing session records.
----@return string A serialized string representing the sessions data.
+---@param sessions table { name: string, path: string }[] sessions_table A table containing session records, where each record is a table with keys: 
+---       - name (string): the session name.
+---       - path (string): the session path.
+---@return string str A serialized string representing the sessions data.
 local function serialize_sessions_to_string(sessions)
-  local s = "return {\n  sessions = {\n"
+  local str = "return {\n  sessions = {\n"
   for _, session in ipairs(sessions) do
-    s = s .. string.format("    { name = %q, path = %q },\n", session.name, session.path)
+    str = str .. string.format("    { name = %q, path = %q },\n", session.name, session.path)
   end
-  s = s .. "  }\n}"
-  return s
+  str = str .. "  }\n}"
+  return str
 end
 
 --- write_sessions_to_file
@@ -115,6 +119,8 @@ end
 --- Finally, a Vim command is executed to create a session file using mksession.
 ---
 ---@param new_session table A table containing new session information (expects at least "name" and "path" fields).
+---       - name (string): the session name.
+---       - path (string): the session path.
 function M.add_session(new_session)
   load_sessions_from_file() -- Load current sessions
 
@@ -140,7 +146,7 @@ end
 ---
 ---@param selected_session table A table containing information about the selected session,
 ---       typically including fields "value" (the session path) and "name" (the session file name).
----@return boolean Returns true if session is successfully executed; otherwise, false.
+---@return boolean # Returns true if session is successfully executed; otherwise, false.
 function M.execute_session(selected_session)
   -- Close all buffers.
   vim.cmd('silent!' .. '%bd')
