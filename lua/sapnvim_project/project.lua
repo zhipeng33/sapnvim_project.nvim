@@ -1,14 +1,23 @@
+--[[
+  This module provides functionality for creating projects asynchronously.
+  It collects user input for the project name and path, then creates a new session.
+  It uses telescope for potential further enhancements, sapnvim_project.utils for
+  path utilities, and sapnvim_project.session_manager for session handling.
+--]]
+
 local telescope = require('telescope')
-local utils = require('sapnvim_project.utils.path')
+local utils = require('sapnvim_project.utils')
 local session_manager = require('sapnvim_project.session_manager')
 
 local M = {}
 
---- 异步获取用户输入，通过回调传递结果
---- @param prompt string 提示信息
---- @param default_var string 默认输入值
---- @param msg string 用于错误消息标识
---- @param callback function 回调函数，参数为输入的值（可能为 nil）
+--- Asynchronously obtains user input and passes the result to a callback function.
+--- If the user cancels input, the callback is called with nil.
+---
+--- @param prompt string The prompt to display to the user.
+--- @param default_var string The default input value.
+--- @param msg string A message identifier for error notifications.
+--- @param callback function A function to call with the user's input as its argument.
 local function input_project_info(prompt, default_var, msg, callback)
   vim.ui.input({
     prompt = prompt,
@@ -23,13 +32,16 @@ local function input_project_info(prompt, default_var, msg, callback)
   end)
 end
 
---- 异步创建项目，收集用户输入后才调用 session_manager.add_session
+--- Asynchronously creates a new project session.
+--- It collects the project name and path from the user and then calls
+--- session_manager.add_session with the collected session data.
 function M.create_project()
   local cwd = utils.add_slash_if_folder(utils.resolve(utils.cwd()))
   local new_session = { name = vim.fn.fnamemodify(utils.cwd(), ":t"), path = cwd }
   local prompt_name = "Naming the session: "
   local prompt_path = "Confirming the session path: "
-  -- 首先询问 name，然后在回调中询问 path
+
+  -- Prompt for the project name first, then for the path in a nested callback.
   input_project_info(prompt_name, new_session.name, "name", function(name_input)
     if not name_input then
       return
@@ -40,7 +52,7 @@ function M.create_project()
         return
       end
       new_session.path = path_input
-      -- 当收集完所有信息后调用 session_manager.add_session
+      -- Call session_manager.add_session once all information has been collected.
       session_manager.add_session(new_session)
       vim.notify("Project created successfully", vim.log.levels.INFO)
     end)

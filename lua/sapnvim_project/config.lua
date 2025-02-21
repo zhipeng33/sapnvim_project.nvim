@@ -1,4 +1,4 @@
-local utils = require('sapnvim_project.utils.path')
+local utils = require('sapnvim_project.utils')
 
 local M = {}
 

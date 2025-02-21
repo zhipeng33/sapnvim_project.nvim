@@ -11,7 +11,7 @@ local action_state = require('telescope.actions.state')
 local entry_display = require("telescope.pickers.entry_display")
 
 local session_manager = require('sapnvim_project.session_manager')
-local utils = require('sapnvim_project.utils.path')
+local utils = require('sapnvim_project.utils')
 
 local function create_finder()
   local sessions = session_manager.get_all_sessions() or {}
