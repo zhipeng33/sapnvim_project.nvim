@@ -1,8 +1,8 @@
 --- session_manager.lua
---- 
+---
 --- This file manages session data for the sapnvim_project.
 --- It provides functions to load, save, and execute session files.
---- 
+---
 --- The file uses a Lua file as a storage backend for session data.
 --- Sessions are stored as tables with "name" and "path" fields.
 --- The primary functions in this file are:
@@ -31,7 +31,7 @@ local sessions_table = {}
 
 --- load_sessions_from_file
 --- Loads session data from the file specified by sessions_data_file.
---- 
+---
 --- Uses pcall with dofile to safely execute and load the content of the file.
 --- If successful and the loaded result is a table containing a "sessions" field,
 --- then sessions_table is updated accordingly. Otherwise, sessions_table is reset to an empty table.
@@ -54,7 +54,7 @@ end
 ---
 --- This converts the sessions array into a string that can be written to a file and later loaded with dofile.
 ---
----@param sessions table { name: string, path: string }[] sessions_table A table containing session records, where each record is a table with keys: 
+---@param sessions table { name: string, path: string }[] sessions_table A table containing session records, where each record is a table with keys:
 ---       - name (string): the session name.
 ---       - path (string): the session path.
 ---@return string str A serialized string representing the sessions data.
@@ -69,7 +69,7 @@ end
 
 --- write_sessions_to_file
 --- Writes the current sessions_table to the sessions data file.
---- 
+---
 --- Serializes the sessions_table and writes it to the file defined by sessions_data_file.
 --- If the file cannot be opened for writing, a notification is shown.
 local function write_sessions_to_file()
@@ -89,7 +89,7 @@ end
 --- Iterates through sessions_table to find a session whose "path" field matches the provided path.
 ---
 ---@param path string The path used to check against existing sessions.
----@return table|nil Returns the matching session table if found, otherwise nil.
+---@return table? Returns the matching session table if found, otherwise nil.
 local function session_exists_in_cache(path)
   for _, session in ipairs(sessions_table) do
     if session.path == path then
@@ -104,7 +104,9 @@ end
 ---
 --- Loads the sessions from the sessions data file and returns the sessions table.
 ---
----@return table A table containing all session records.
+---@return { name: string, path: string }[] sessions_table A table containing session records, where each record is a table with keys:
+---        - name (string): the session name.
+---        - path (string): the session path.
 function M.get_all_sessions()
   return load_sessions_from_file()
 end
@@ -118,21 +120,39 @@ end
 --- If it does not exist, the new session is added to sessions_table and saved to the file.
 --- Finally, a Vim command is executed to create a session file using mksession.
 ---
----@param new_session table A table containing new session information (expects at least "name" and "path" fields).
+---@param new_session table? A table containing new session information (expects at least "name" and "path" fields).
 ---       - name (string): the session name.
 ---       - path (string): the session path.
+---@return boolean # Returns whether the session is added, true means it is added successfully
 function M.add_session(new_session)
-  load_sessions_from_file() -- Load current sessions
+  if not new_session then
+    return false
+  end
 
-  local old_sessions = session_exists_in_cache(new_session.path)
-  if old_sessions then
-    new_session.name = old_sessions.name
+  local old_session = session_exists_in_cache(new_session.path)
+  if old_session then
+    new_session.name = old_session.name
   else
     table.insert(sessions_table, new_session)
     write_sessions_to_file()
   end
-  local sessions_name = config.options.sessions_storage_dir .. new_session.name
-  vim.cmd(string.format("silent! mks! %s", sessions_name))
+  new_session.name = config.options.sessions_storage_dir .. new_session.name
+  vim.cmd(string.format("silent! mks! %s", new_session.name))
+  return true
+end
+
+function M.save_existing_session(old_session)
+  if not old_session then
+    return false
+  end
+
+  old_session = session_exists_in_cache(old_session.path)
+  if old_session then
+    old_session.name = config.options.sessions_storage_dir .. old_session.name
+    vim.cmd(string.format("silent! mks! %s", old_session.name))
+    return true
+  end
+  return false
 end
 
 --- execute_session

@@ -36,8 +36,9 @@ end
 --- It collects the project name and path from the user and then calls
 --- session_manager.add_session with the collected session data.
 function M.create_project()
+  local name = vim.fn.fnamemodify(utils.resolve(utils.cwd()), ":t")
   local cwd = utils.add_slash_if_folder(utils.resolve(utils.cwd()))
-  local new_session = { name = vim.fn.fnamemodify(utils.cwd(), ":t"), path = cwd }
+  local new_session = { name = name, path = cwd }
   local prompt_name = "Naming the session: "
   local prompt_path = "Confirming the session path: "
 
@@ -51,12 +52,23 @@ function M.create_project()
       if not path_input then
         return
       end
-      new_session.path = path_input
+      cwd = path_input
       -- Call session_manager.add_session once all information has been collected.
+      session_manager.get_all_sessions()
       session_manager.add_session(new_session)
       vim.notify("Project created successfully", vim.log.levels.INFO)
     end)
   end)
+end
+
+function M.save_project()
+  local name = vim.fn.fnamemodify(utils.resolve(utils.cwd()), ":t")
+  local cwd = utils.add_slash_if_folder(utils.resolve(utils.cwd()))
+  local old_session = { name = name, path = cwd }
+  session_manager.get_all_sessions()
+  if not session_manager.save_existing_session(old_session) then
+    vim.notify("The workspace is not an existing project", vim.log.levels.WARN)
+  end
 end
 
 function M.project_preselector(opts)
