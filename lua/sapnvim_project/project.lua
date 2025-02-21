@@ -14,10 +14,10 @@ local M = {}
 --- Asynchronously obtains user input and passes the result to a callback function.
 --- If the user cancels input, the callback is called with nil.
 ---
---- @param prompt string The prompt to display to the user.
---- @param default_var string The default input value.
---- @param msg string A message identifier for error notifications.
---- @param callback function A function to call with the user's input as its argument.
+---@param prompt string The prompt to display to the user.
+---@param default_var string The default input value.
+---@param msg string A message identifier for error notifications.
+---@param callback function A function to call with the user's input as its argument.
 local function input_project_info(prompt, default_var, msg, callback)
   vim.ui.input({
     prompt = prompt,
