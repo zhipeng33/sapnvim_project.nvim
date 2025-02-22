@@ -53,7 +53,7 @@ function project.create_project()
         return
       end
       new_session.path = path_input
-      -- session_manager.get_all_sessions()
+      session_manager.get_all_sessions()
       if session_manager.save_existing_session(new_session) then
         vim.notify("Existing project saved successfully!", vim.log.levels.INFO)
         return

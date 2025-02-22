@@ -33,12 +33,15 @@ end
 ---
 --- Iterates through sessions_table to find a session whose "path" field matches the provided path.
 ---
----@param path string The path used to check against existing sessions.
----@return table? Returns the matching session table if found, otherwise nil.
-local function session_exists_is_cache(path)
-  for _, session in ipairs(sessions_table) do
-    if session.path == path then
-      return session
+---@param session { name: string, path: string }? The path used to check against existing sessions.
+---@return { name: string, path: string }? s Returns the matching session table if found, otherwise nil.
+local function session_exists_is_cache(session)
+  if not session then
+    return nil
+  end
+  for _, s in ipairs(sessions_table) do
+    if s.path == session.path then
+      return s
     end
   end
   return nil
@@ -65,16 +68,20 @@ function sessions.add_session(new_session)
   end
   table.insert(sessions_table, new_session)
   storage.write_data_to_file({ sessions = sessions_table, history = {} })
+  new_session.name = config.options.sessions_storage_dir .. new_session.name
+  vim.cmd(string.format('silent! mks! %s', new_session.name))
   return true
 end
 
 --- save_existing_session
 --- Save the existing session and regenerate the session file.
----@param old_session { name: string, path: string } indicates the session record to be saved.
+---@param old_session { name: string, path: string }? indicates the session record to be saved.
 ---@return boolean boolean # Returns true if the save is successful, otherwise returns false.
 function sessions.save_existing_sessin(old_session)
-  local existing = session_exists_is_cache(old_session.path)
-  if not existing or not old_session then
+  local existing = session_exists_is_cache(old_session)
+  -- vim.notify(vim.inspect(existing))
+  -- vim.notify(vim.inspect(sessions_table))
+  if not existing then
     return false
   end
   existing.name = config.options.sessions_storage_dir .. existing.name
@@ -86,9 +93,13 @@ end
 --- Loads a session.
 --- Closes all buffers, checks the session path using utils.is_valid_path,
 --- and sources the session file from config.defaults.sessions_storage_dir.
----@param selected_session table { value: string, name: string }
----@return boolean true if loaded, false otherwise.
+---@param selected_session { value: string, name: string }? table
+---@return boolean # if loaded, false otherwise.
 function sessions.load_session(selected_session)
+  if not selected_session then
+    return false
+  end
+
   -- Close all open buffers.
   vim.cmd('silent! %bd')
 
