@@ -9,7 +9,7 @@ local telescope = require('telescope')
 local utils = require('sapnvim_project.utils')
 local session_manager = require('sapnvim_project.session_manager')
 
-local M = {}
+local project = {}
 
 --- Asynchronously obtains user input and passes the result to a callback function.
 --- If the user cancels input, the callback is called with nil.
@@ -26,7 +26,7 @@ local function input_project_info(prompt, default_var, msg, callback)
     if input and input ~= "" then
       callback(input)
     else
-      vim.notify(string.format("Project %s input was cancelled", msg), vim.log.levels.WARN)
+      vim.notify(string.format("Project %s input was cancelled!", msg), vim.log.levels.WARN)
       callback(nil)
     end
   end)
@@ -35,7 +35,7 @@ end
 --- Asynchronously creates a new project session.
 --- It collects the project name and path from the user and then calls
 --- session_manager.add_session with the collected session data.
-function M.create_project()
+function project.create_project()
   local name = vim.fn.fnamemodify(utils.resolve(utils.cwd()), ":t")
   local cwd = utils.add_slash_if_folder(utils.resolve(utils.cwd()))
   local new_session = { name = name, path = cwd }
@@ -52,27 +52,32 @@ function M.create_project()
       if not path_input then
         return
       end
-      cwd = path_input
-      -- Call session_manager.add_session once all information has been collected.
-      session_manager.get_all_sessions()
-      session_manager.add_session(new_session)
-      vim.notify("Project created successfully", vim.log.levels.INFO)
+      new_session.path = path_input
+      -- session_manager.get_all_sessions()
+      if session_manager.save_existing_session(new_session) then
+        vim.notify("Existing project saved successfully!", vim.log.levels.INFO)
+        return
+      end
+      if session_manager.create_session(new_session) then
+        vim.notify("project creation successfully!", vim.log.levels.INFO)
+        return
+      end
+      vim.notify("Error: Project creation failed, invalid name or path!", vim.log.levels.ERROR)
     end)
   end)
 end
 
-function M.save_project()
+function project.save_project()
   local name = vim.fn.fnamemodify(utils.resolve(utils.cwd()), ":t")
   local cwd = utils.add_slash_if_folder(utils.resolve(utils.cwd()))
   local old_session = { name = name, path = cwd }
-  session_manager.get_all_sessions()
   if not session_manager.save_existing_session(old_session) then
-    vim.notify("The workspace is not an existing project", vim.log.levels.WARN)
+    vim.notify("The workspace is not an existing project, run ProjectAdd command!", vim.log.levels.WARN)
   end
 end
 
-function M.project_preselector(opts)
+function project.project_preselector(opts)
   telescope.extensions['sapnvim_project'].select(opts)
 end
 
-return M
+return project

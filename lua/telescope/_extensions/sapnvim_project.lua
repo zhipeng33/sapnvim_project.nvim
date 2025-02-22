@@ -54,7 +54,7 @@ local function select_session(opts)
       actions.select_default:replace(function()
         actions.close(prompt_bufnr)
         local selection = action_state.get_selected_entry()
-        session_manager.execute_session(selection)
+        session_manager.load_session(selection)
       end)
       return true
     end
