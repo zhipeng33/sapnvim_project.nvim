@@ -1,8 +1,8 @@
 ---sessions.lua
 
 local utils = require('sapnvim_project.utils')
-local config = require('sapnvim_project.config')
 local storage = require('sapnvim_project.session_manager.__storage')
+local sessions_storage_dir = storage.get_sessions_storage_dir()
 
 local sessions = {}
 
@@ -68,7 +68,7 @@ function sessions.add_session(new_session)
   end
   table.insert(sessions_table, new_session)
   storage.write_data_to_file({ sessions = sessions_table, history = {} })
-  new_session.name = config.options.sessions_storage_dir .. new_session.name
+  new_session.name = sessions_storage_dir .. new_session.name
   vim.cmd(string.format('silent! mks! %s', new_session.name))
   return true
 end
@@ -84,7 +84,7 @@ function sessions.save_existing_sessin(old_session)
   if not existing then
     return false
   end
-  existing.name = config.options.sessions_storage_dir .. existing.name
+  existing.name = sessions_storage_dir .. existing.name
   vim.cmd(string.format('silent! mks! %s', existing.name))
   return true
 end
@@ -112,7 +112,7 @@ function sessions.load_session(selected_session)
     return false
   end
   -- Construct the full path to the session file and source it.
-  local session_file = config.defaults.sessions_storage_dir .. session_name
+  local session_file = sessions_storage_dir .. session_name
   vim.cmd(string.format("silent! source %s", session_file))
   return true
 end

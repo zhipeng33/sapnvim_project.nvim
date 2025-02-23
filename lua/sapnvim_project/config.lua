@@ -27,8 +27,8 @@ M.defaults = {
 
 M.options = nil
 
-M.setup = function(options)
-  M.options = vim.tbl_deep_extend('force', M.defaults, options or {})
+M.setup = function(opts)
+  M.options = vim.tbl_deep_extend("force", {}, M.defaults, opts or {})
 end
 
 setmetatable(M, {

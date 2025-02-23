@@ -3,7 +3,8 @@ local config = require('sapnvim_project.config')
 local storage = {}
 
 --- Determine the full path to the sessions data file based on configuration options.
-local sessions_data_file = config.options.sessions_storage_dir .. '../' .. config.options.sessions_data_filename
+local sessions_storage_dir = config.options.sessions_storage_dir
+local sessions_data_file = sessions_storage_dir .. '../' .. config.options.sessions_data_filename
 
 --- Serializes the sessions and history tables into a string.
 ---@param data { sessions: {}[], history: {}[] } Contains both the sessions and history tables.
@@ -63,6 +64,13 @@ end
 ---@return string filename data file path.
 function storage.get_sessions_data_file()
   return sessions_data_file
+end
+
+--- get_sessions_storage_dir
+--- Get the full path of the sessions storage dir.
+---@return string dir_path The path to the saved session directory.
+function storage.get_sessions_storage_dir()
+  return sessions_storage_dir
 end
 
 return storage
