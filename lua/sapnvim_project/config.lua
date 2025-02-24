@@ -27,8 +27,46 @@ M.defaults = {
 
 M.options = nil
 
-M.setup = function(opts)
-  M.options = vim.tbl_deep_extend("force", {}, M.defaults, opts or {})
+-- Setup function to initialize configuration
+-- @param opts table Optional configuration table to override defaults
+-- @return boolean Success status
+M.setup = function(user_config)
+  -- Initialize with default configuration
+  local config = user_config
+  local def_opts = M.defaults
+  config = vim.tbl_deep_extend("force", {}, def_opts, config or {})
+
+  for key, value in pairs(config) do
+    if not M.defaults[key] then -- 直接用键名检查
+      error(string.format("%s is not an experience configuration value", key))
+    end
+
+    local expected_type = type(M.defaults[key])
+    local actual_type = type(config[key])
+    if not (expected_type == actual_type) then
+      error(string.format(
+        "Invalid type for '%s': \nexpected '%s', Default value: %s \ngot '%s', Provided value: %s",
+        key,
+        expected_type,
+        vim.inspect(M.defaults[key]),
+        actual_type,
+        vim.inspect(value)
+      ))
+    end
+  end
+
+  -- Ensure storage directory ends with slash
+  config.sessions_storage_dir = utils.add_slash_if_folder(utils.resolve(config.sessions_storage_dir))
+
+  -- Validate filename
+  local ok, msg = utils.is_valid_filename(config.sessions_data_filename, 'lua')
+  if not ok and msg then
+    msg = string.format('"%s" is Invalid filename, %s', config.sessions_data_filename, msg)
+    error(msg)
+  end
+
+  -- Store validated options
+  M.options = config
 end
 
 setmetatable(M, {

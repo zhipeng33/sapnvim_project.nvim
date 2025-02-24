@@ -17,7 +17,7 @@ local utils = {}
 --- and then resolves it to its absolute path using vim.fn.resolve.
 ---
 ---@param filename string The filename or path to resolve.
----@return string The resolved absolute path.
+---@return string filename The resolved absolute path.
 ---@type fun(filename: string): string
 utils.resolve = require('sapnvim_project.utils.__path').resolve
 
@@ -28,6 +28,13 @@ utils.resolve = require('sapnvim_project.utils.__path').resolve
 ---@return string The formatted path.
 ---@type fun(path: string): string
 utils.format_path = require('sapnvim_project.utils.__path').format_path
+
+--- Check if a string is a valid filename
+---@param filename string The filename string to check
+---@param extension string Expected file extension (without dot, e.g. "lua")
+---@return boolean? ok, string|nil msg # Returns whether valid and error message
+---@type fun(filename: string, extension: string): boolean, string|nil
+utils.is_valid_filename = require('sapnvim_project.utils.__path').is_valid_filename
 
 --- Returns the current working directory in a formatted style.
 --- The directory is obtained using vim.uv.cwd() and then formatted using the format_path function.
@@ -40,7 +47,7 @@ utils.cwd = require('sapnvim_project.utils.__path').cwd
 --- It first resolves the path using the resolve function and then checks whether it is a directory using vim.fn.isdirectory.
 ---
 ---@param path string The path to validate.
----@return number Returns 1 if the path is a valid directory; otherwise, returns 0.
+---@return number 0|1 Returns 1 if the path is a valid directory; otherwise, returns 0.
 ---@type fun(path: string): 0|1
 utils.is_valid_path = require('sapnvim_project.utils.__path').is_valid_path
 
@@ -48,7 +55,7 @@ utils.is_valid_path = require('sapnvim_project.utils.__path').is_valid_path
 --- It uses vim.uv.fs_stat to determine whether the path is a directory.
 ---
 ---@param path string The file or directory path.
----@return string The updated path with a trailing slash if it represents a directory; otherwise, the original path.
+---@return string path The updated path with a trailing slash if it represents a directory; otherwise, the original path.
 ---@type fun(path: string): string
 utils.add_slash_if_folder = require('sapnvim_project.utils.__path').add_slash_if_folder
 
