@@ -13,6 +13,9 @@ function M.create_mommands(opts)
   vim.api.nvim_create_user_command('ProjectAdd', function()
     project.create_project()
   end, {})
+  vim.api.nvim_create_user_command('ProjectClose', function()
+    project.close_project()
+  end, {})
 end
 
 return M

@@ -32,13 +32,17 @@ local function input_project_info(prompt, default_var, msg, callback)
   end)
 end
 
+local function get_current_cwd_info()
+  local name = vim.fn.fnamemodify(utils.resolve(utils.cwd()), ":t")
+  local cwd = utils.add_slash_if_folder(utils.resolve(utils.cwd()))
+  return { name = name, path = cwd }
+end
+
 --- Asynchronously creates a new project session.
 --- It collects the project name and path from the user and then calls
 --- session_manager.add_session with the collected session data.
 function project.create_project()
-  local name = vim.fn.fnamemodify(utils.resolve(utils.cwd()), ":t")
-  local cwd = utils.add_slash_if_folder(utils.resolve(utils.cwd()))
-  local new_session = { name = name, path = cwd }
+  local new_session = get_current_cwd_info()
   local prompt_name = "Naming the session: "
   local prompt_path = "Confirming the session path: "
 
@@ -68,9 +72,7 @@ function project.create_project()
 end
 
 function project.save_project()
-  local name = vim.fn.fnamemodify(utils.resolve(utils.cwd()), ":t")
-  local cwd = utils.add_slash_if_folder(utils.resolve(utils.cwd()))
-  local old_session = { name = name, path = cwd }
+  local old_session = get_current_cwd_info()
   if not session_manager.save_existing_session(old_session) then
     vim.notify("The workspace is not an existing project, run ProjectAdd command!", vim.log.levels.WARN)
   end
@@ -78,6 +80,14 @@ end
 
 function project.project_preselector(opts)
   telescope.extensions['sapnvim_project'].select(opts)
+end
+
+function project.close_project()
+  local selected_session = get_current_cwd_info()
+  session_manager.save_existing_session(selected_session)
+  if not session_manager.close_session(selected_session) then
+    error("The specified item is invalid or not given!")
+  end
 end
 
 return project

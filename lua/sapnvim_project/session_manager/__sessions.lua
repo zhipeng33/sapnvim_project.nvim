@@ -117,4 +117,13 @@ function sessions.load_session(selected_session)
   return true
 end
 
+function sessions.close_session(selected_session)
+  if not selected_session then
+    return false
+  end
+  vim.cmd('silent %bd')
+  vim.cmd.cd(vim.env.PWD)
+  return true
+end
+
 return sessions

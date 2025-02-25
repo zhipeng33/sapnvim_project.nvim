@@ -36,6 +36,8 @@ session_manager.save_existing_session = sessions.save_existing_sessin
 ---@type fun(selected_session: { value: string, name: string }): boolean
 session_manager.load_session = sessions.load_session
 
+session_manager.close_session = sessions.close_session
+
 --- get_history_sessions
 --- Get all stored history records.
 --- Load the latest data from the data file before each call.
