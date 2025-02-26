@@ -9,4 +9,8 @@ issue_templates:
     title: "[FEATURE] "
     labels: ["enhancement"]
     assignees: [zhipeng33]
-
+  - name: Bug Peport
+    description: Report a bug in the project
+    title: "[BUG] "
+    labels: ["bug"]
+    assignees: [zhipeng33]
