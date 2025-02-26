@@ -1,0 +1,12 @@
+blank_issues_enabled: false
+contact_links:
+  - name: General Support
+    url: https://github.com/sapnvim/sapnvim_project.nvim/issues
+    about: Please visit this link for general support queries.
+issue_templates:
+  - name: Feature Request
+    description: Suggest a new feature or enhancement
+    title: "[FEATURE] "
+    labels: ["enhancement"]
+    assignees: [zhipeng33]
+
