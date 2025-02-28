@@ -13,9 +13,20 @@ return {
     { 'nvim-telescope/telescope-file-browser.nvim', }
   },
   opts = {
+    --- The address where the project is stored
+    --- Useing Lazy.nvim, default: '~/.local/share/nvim/lazy/sapnvim_project.nvim/sessions'
+    --- no Using Lazy.nvim, details: 'vim.fn.stdpath("config") .. "/sessions"'
     sessions_storage_dir = '~/.local/share/nvim/lazy/sapnvim_project.nvim/sessions',
+
+    --- This is a data file
+    --- Records the projects that have been saved in the project storage directory
     sessions_data_filename = 'sessions_data.lua',
-    -- telescope config
+
+    --- This is a setting related to session saving in Vim/Neovim
+    --- View details :h sessionoptions
+    sessionoptions = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp", "folds" },
+
+    --- telescope config
     picker_opts = {
     }
   }

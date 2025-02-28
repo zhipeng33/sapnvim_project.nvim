@@ -22,6 +22,7 @@ M.defaults = {
   ---type string
   sessions_storage_dir = utils.add_slash_if_folder(get_default_storage_dir()),
   sessions_data_filename = 'sessions_data.lua',
+  sessionoptions = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp", "folds" },
   picker_opts = {
   }
 }
@@ -64,6 +65,8 @@ M.setup = function(user_config)
     msg = string.format('"%s" is Invalid filename, %s', config.sessions_data_filename, msg)
     error(msg)
   end
+
+  vim.opt.sessionoptions = config.sessionoptions
 
   -- Store validated options
   M.options = config
