@@ -82,16 +82,11 @@ function project.project_preselector(opts)
   local selected_session = get_current_cwd_info()
   session_manager.get_history_sessions()
 
-  if session_manager.save_existing_session(selected_session) then
-    session_manager.create_history_session(selected_session)
-  else
+  if not session_manager.save_existing_session(selected_session) then
     selected_session.name = 'tmp'
-    session_manager.create_history_session(selected_session, true)
+    session_manager.create_history_session(selected_session, true, true)
   end
 
-  if not session_manager.close_session(selected_session, true) then
-    error("The specified item is invalid or not given!")
-  end
   telescope.extensions['sapnvim_project'].select(opts)
 end
 
@@ -99,16 +94,29 @@ function project.close_project()
   local selected_session = get_current_cwd_info()
   session_manager.get_history_sessions()
 
-  if session_manager.save_existing_session(selected_session) then
-    session_manager.create_history_session(selected_session)
-  else
+  if not session_manager.save_existing_session(selected_session) then
     selected_session.name = 'tmp'
-    session_manager.create_history_session(selected_session, true)
+    session_manager.create_history_session(selected_session, true, true)
   end
 
   if not session_manager.close_session(selected_session, true) then
     error("The specified item is invalid or not given!")
   end
+end
+
+function project.toggle_between_projects()
+  local current_session = get_current_cwd_info()
+  session_manager.get_all_sessions()
+  session_manager.get_history_sessions()
+
+  if not session_manager.save_existing_session(current_session) then
+    current_session.name = 'tmp'
+    session_manager.create_history_session(current_session, true, false)
+  end
+
+  session_manager.close_session(current_session)
+  session_manager.load_history_session()
+  session_manager.create_history_session(current_session)
 end
 
 return project

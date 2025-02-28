@@ -64,14 +64,19 @@ end
 ---@return boolean Returns true if added successfully, otherwise returns false.
 function sessions.add_session(new_session)
   if not new_session then
+    error("Parameters must be passed!")
+  end
+  if new_session == {} then
     return false
   end
+
   table.insert(sessions_table, new_session)
   local data = storage.load_data_form_file()
   data.sessions = sessions_table
   storage.write_data_to_file(data)
-  new_session.name = sessions_storage_dir .. new_session.name
-  vim.cmd(string.format('silent! mks! %s', new_session.name))
+
+  local session_file = sessions_storage_dir .. new_session.name
+  vim.cmd(string.format('silent! mks! %s', session_file))
   return true
 end
 
@@ -80,6 +85,9 @@ end
 ---@param old_session { name: string, path: string }? indicates the session record to be saved.
 ---@return boolean boolean # Returns true if the save is successful, otherwise returns false.
 function sessions.save_existing_sessin(old_session)
+  if not old_session then
+    error("Parameters must be passed!")
+  end
   local existing = session_exists_is_cache(old_session)
   -- vim.notify(vim.inspect(existing))
   -- vim.notify(vim.inspect(sessions_table))
@@ -99,7 +107,7 @@ end
 ---@return boolean # if loaded, false otherwise.
 function sessions.load_session(selected_session)
   if not selected_session then
-    return false
+    error("Parameters must be passed!")
   end
 
   -- Cache session values for clarity.
@@ -107,7 +115,7 @@ function sessions.load_session(selected_session)
   local session_name = selected_session.name
 
   -- Validate the provided session path.
-  if not utils.is_valid_path(session_path) == 1 or not selected_session then
+  if not utils.is_valid_path(session_path) == 1 then
     return false
   end
   -- Construct the full path to the session file and source it.
@@ -117,12 +125,12 @@ function sessions.load_session(selected_session)
 end
 
 function sessions.close_session(selected_session, change)
-  change = change or false
+  change = (change == nil) and false or change
   if not selected_session then
     return false
   end
   vim.cmd('silent %bd')
-  if not change then
+  if change then
     vim.cmd.cd(vim.env.PWD)
   end
   return true

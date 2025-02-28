@@ -16,6 +16,9 @@ function M.create_mommands(opts)
   vim.api.nvim_create_user_command('ProjectClose', function()
     project.close_project()
   end, {})
+  vim.api.nvim_create_user_command('ProjectToggle', function()
+    project.toggle_between_projects()
+  end, {})
 end
 
 return M

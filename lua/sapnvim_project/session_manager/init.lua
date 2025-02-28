@@ -47,4 +47,6 @@ session_manager.get_history_sessions = history.get_history_sessions
 
 session_manager.create_history_session = history.create_history_session
 
+session_manager.load_history_session = history.load_history_session
+
 return session_manager
