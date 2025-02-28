@@ -1,10 +1,25 @@
 # sapnvim_project.nvim
 This plugin adds a project management function to nvim, which allows you to jump between saved projects.
 
+## Features
+
+### Project Management
+The plugin provides comprehensive project management capabilities for Neovim:
+
+- **Project Creation and Storage**: Save your current workspace as a named project
+- **Project Loading**: Quickly switch to any previously saved project
+- **Project State Preservation**: Save the current state of your project, including open buffers, cursor positions, and more
+- **Quick Project Switch**: Toggle between two most recently used projects for efficient multitasking
+
+### Session Handling
+- Automatically preserves your project's state using Neovim's session management
+- Customizable session options to control exactly what gets saved in your project state
+- Project history tracking for easy navigation between recent projects
+
 ## Install
 - lazy.nvim  
 The following is the installation using `lazy.nvim`, including the default configuration
-~~~lua
+```lua
 return {
   'sapnvim/sapnvim_project.nvim',
   dependencies = {
@@ -31,7 +46,7 @@ return {
     }
   }
 }
-~~~
+```
 
 ## Commands
 - *`ProjectAdd`*  
@@ -46,12 +61,16 @@ Load a project from the list of saved projects into the current workspace
 - *`ProjectClose`*  
 Used to close the current project and save the latest status before closing.
 
+- *`ProjectToggle`*  
+Quickly toggle between the two most recently used projects, enabling efficient switching between related tasks.
+
 
 Using commands may not be very convenient, 
 here are some recommended shortcut key bindings to make execution easier.
-~~~
+```
 vim.keymap.set('n', '<leader>sa', '<cmd>ProjectAdd<cr>', { desc = 'Create a project'})
 vim.keymap.set('n', '<leader>sc', '<cmd>ProjectClose<cr>', { desc = 'Close current project'})
 vim.keymap.set('n', '<leader>sw', '<cmd>ProjectSave<cr>', { desc = 'Save exists project'})
 vim.keymap.set('n', '<leader>sf', '<cmd>ProjectLoad<cr>', { desc = 'Load project in list'})
-~~~
+vim.keymap.set('n', '<leader>st', '<cmd>ProjectToggle<cr>', { desc = 'Toggle between recent projects'})
+```
