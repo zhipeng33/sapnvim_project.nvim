@@ -37,7 +37,7 @@ end
 ---@return { name: string, path: string }? s Returns the matching session table if found, otherwise nil.
 local function session_exists_is_cache(session)
   if not session then
-    return nil
+    error("Parameters must be passed!")
   end
   for _, s in ipairs(sessions_table) do
     if s.path == session.path then
@@ -103,23 +103,19 @@ end
 --- Loads a session.
 --- Closes all buffers, checks the session path using utils.is_valid_path,
 --- and sources the session file from config.defaults.sessions_storage_dir.
----@param selected_session { value: string, name: string }? table
+---@param selected_session { name: string, path: string }? table
 ---@return boolean # if loaded, false otherwise.
 function sessions.load_session(selected_session)
   if not selected_session then
     error("Parameters must be passed!")
   end
 
-  -- Cache session values for clarity.
-  local session_path = selected_session.value
-  local session_name = selected_session.name
-
   -- Validate the provided session path.
-  if not utils.is_valid_path(session_path) == 1 then
+  if not (utils.is_valid_path(selected_session.path) == 1) then
     return false
   end
   -- Construct the full path to the session file and source it.
-  local session_file = sessions_storage_dir .. session_name
+  local session_file = sessions_storage_dir .. selected_session.name
   vim.cmd(string.format("silent! source %s", session_file))
   return true
 end
@@ -127,7 +123,7 @@ end
 function sessions.close_session(selected_session, change)
   change = (change == nil) and false or change
   if not selected_session then
-    return false
+    error("Parameters must be passed!")
   end
   vim.cmd('silent %bd')
   if change then
