@@ -25,7 +25,6 @@ return {
   dependencies = {
     { 'nvim-telescope/telescope.nvim' },
     { 'nvim-telescope/telescope-fzf-native.nvim',   build = 'make', },
-    { 'nvim-telescope/telescope-file-browser.nvim', }
   },
   opts = {
     --- The address where the project is stored
