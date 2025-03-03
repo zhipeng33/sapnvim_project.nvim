@@ -5,7 +5,7 @@
   path utilities, and sapnvim_project.session_manager for session handling.
 --]]
 
-local telescope = require('telescope')
+local telescope = require('sapnvim_project.picker.telescope')
 local utils = require('sapnvim_project.utils')
 local session_manager = require('sapnvim_project.session_manager')
 local fzf_lua = require('sapnvim_project.picker.fzf_lua')
@@ -94,7 +94,7 @@ function project.project_preselector(opts)
     fzf_lua.select_session(opts.picker_opts)
   end
   if opts.picker == 'telescope' then
-    telescope.extensions['sapnvim_project'].select(opts)
+    telescope.select_session(opts.picker_opts)
   end
 end
 

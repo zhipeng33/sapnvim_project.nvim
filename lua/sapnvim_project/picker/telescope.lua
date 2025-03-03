@@ -13,6 +13,8 @@ local entry_display = require("telescope.pickers.entry_display")
 local session_manager = require('sapnvim_project.session_manager')
 local utils = require('sapnvim_project.utils')
 
+local M = {}
+
 local function create_finder()
   local sessions = session_manager.get_all_sessions() or {}
 
@@ -41,7 +43,7 @@ local function create_finder()
   })
 end
 
-local function select_session(opts)
+function M.select_session(opts)
   opts = opts or {}
   pickers.new(opts, {
     prompt_title = "Select a project",
@@ -59,9 +61,5 @@ local function select_session(opts)
     end
   }):find()
 end
-return telescope.register_extension({
-  exports = {
-    ['spanvim_sessions'] = select_session,
-    select = select_session
-  }
-})
+
+return M

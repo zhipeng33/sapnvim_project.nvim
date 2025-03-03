@@ -17,13 +17,16 @@ The plugin provides comprehensive project management capabilities for Neovim:
 - Project history tracking for easy navigation between recent projects
 
 ## Install
-- lazy.nvim  
-The following is the installation using `lazy.nvim`, including the default configuration
+### `lazy.nvim`
+<details>
+    <summary>Telescope.nvim 🌞</summary>
+
 ```lua
 return {
   'sapnvim/sapnvim_project.nvim',
   dependencies = {
     { 'nvim-telescope/telescope.nvim' },
+    { 'nvim-lua/plenary.nvim' },
     { 'nvim-telescope/telescope-fzf-native.nvim',   build = 'make', },
   },
   opts = {
@@ -40,12 +43,67 @@ return {
     --- View details :h sessionoptions
     sessionoptions = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp", "folds" },
 
+    picker = 'telescope'
+
     --- telescope config
     picker_opts = {
     }
   }
 }
 ```
+</details>
+
+
+<details>
+    <summary>fzf-lua 🌞</summary>
+
+```lua
+return {
+  'sapnvim/sapnvim_project.nvim',
+  dependencies = {
+    { 'fzf-lua' },
+    { 'nvim-tree/nvim-web-devicons' },
+    { 'echasnovski/mini.icons' },
+  },
+  opts = function(_, _)
+    local fzf_lua = require('sapnvim_project.picker.fzf_lua')
+    return {
+      --- The address where the project is stored
+      --- Useing Lazy.nvim, default: '~/.local/share/nvim/lazy/sapnvim_project.nvim/sessions'
+      --- no Using Lazy.nvim, details: 'vim.fn.stdpath("config") .. "/sessions"'
+      sessions_storage_dir = '~/.local/share/nvim/lazy/sapnvim_project.nvim/sessions',
+
+      --- This is a data file
+      --- Records the projects that have been saved in the project storage directory
+      sessions_data_filename = 'sessions_data.lua',
+
+      --- This is a setting related to session saving in Vim/Neovim
+      --- View details :h sessionoptions
+      sessionoptions = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp", "folds" },
+
+      -- Useing fzf-lua
+      picker = 'fzf-lua',
+
+      --- fzf-lua config
+      picker_opts = {
+        winopts = { height = 0.33, width = 0.7 },
+        prompt = "Select a project> ",
+        fzf_opts = {
+          ["--ansi"] = "",                                      -- Enable ANSI color codes
+          ["--delimiter"] = fzf_lua.delimiter,                  -- Set delimiter for data parsing
+          ["--with-nth"] = "2..",                               -- Hide the ID column
+          ["--header"] = "name                            path" -- Display header
+        },
+        -- Set the default action to our module-level function
+        actions = {
+          ['default'] = fzf_lua.select_and_load_session
+        }
+      }
+    }
+  end
+}
+```
+</details>
 
 ## Commands
 - *`ProjectAdd`*  
