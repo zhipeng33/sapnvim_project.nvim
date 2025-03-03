@@ -1,20 +1,37 @@
 # sapnvim_project.nvim
 This plugin adds a project management function to nvim, which allows you to jump between saved projects.
 
+
 ## Features
 
-### Project Management
-The plugin provides comprehensive project management capabilities for Neovim:
+### Core Project Management Features
 
-- **Project Creation and Storage**: Save your current workspace as a named project
-- **Project Loading**: Quickly switch to any previously saved project
-- **Project State Preservation**: Save the current state of your project, including open buffers, cursor positions, and more
-- **Quick Project Switch**: Toggle between two most recently used projects for efficient multitasking
+- **Project Creation** - Save the current workspace as a named project through the `ProjectAdd` command
 
-### Session Handling
-- Automatically preserves your project's state using Neovim's session management
-- Customizable session options to control exactly what gets saved in your project state
-- Project history tracking for easy navigation between recent projects
+- **State Saving** - Use the `ProjectSave` command to update the latest state of an existing project
+
+- **Project Loading** - Select and load a saved project from the list through the `ProjectLoad` command
+
+- **Project Closing** - Use the `ProjectClose` command to close the current project and save the latest state
+
+- **Quick Switching** - Seamlessly switch between the two most recently used projects through the `ProjectToggle` command
+
+### Plugin Advantages
+
+- 🚀 **Workflow Continuity** - Maintain the context of multiple projects and reduce switching costs
+
+- 🔍 **Focus on Development** - Maintain an independent working environment and state for each project
+
+- ⏱️ **Improve Efficiency** - Immediately restore to the exact state you left last time without resetting the environment
+
+- 📁 **Space Organization** - Systematically manage multiple projects to avoid workspace clutter
+
+### Session Features
+
+- Automatically save open buffers, window layouts, cursor positions and other working states
+- Support custom session save options to control the specific content that needs to be saved
+- Record project access history to facilitate quick navigation between frequently used projects
+
 
 ## Install
 ### `lazy.nvim`
