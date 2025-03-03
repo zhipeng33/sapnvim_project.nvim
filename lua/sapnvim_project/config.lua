@@ -23,6 +23,7 @@ M.defaults = {
   sessions_storage_dir = utils.add_slash_if_folder(get_default_storage_dir()),
   sessions_data_filename = 'sessions_data.lua',
   sessionoptions = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp", "folds" },
+  picker = 'fzf-lua',
   picker_opts = {
   }
 }
@@ -64,6 +65,11 @@ M.setup = function(user_config)
   if not ok and msg then
     msg = string.format('"%s" is Invalid filename, %s', config.sessions_data_filename, msg)
     error(msg)
+  end
+
+  local picker = { 'telescope', 'fzf-lua' }
+  if not vim.tbl_contains(picker, config.picker) then
+    error(string.format("%s is an invalid selector, defaults %s", config.picker, vim.inspect(picker)))
   end
 
   vim.opt.sessionoptions = config.sessionoptions

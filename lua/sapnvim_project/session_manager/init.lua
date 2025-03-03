@@ -31,9 +31,9 @@ session_manager.save_existing_session = sessions.save_existing_sessin
 --- Loads a session.
 --- Closes all buffers, checks the session path using utils.is_valid_path,
 --- and sources the session file from config.defaults.sessions_storage_dir.
----@param selected_session table { value: string, name: string }
+---@param selected_session table { name: string, path: string }
 ---@return boolean true if loaded, false otherwise.
----@type fun(selected_session: { value: string, name: string }): boolean
+---@type fun(selected_session: { name: string, path: string }): boolean
 session_manager.load_session = sessions.load_session
 
 session_manager.close_session = sessions.close_session

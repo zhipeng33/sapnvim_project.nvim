@@ -8,6 +8,7 @@
 local telescope = require('telescope')
 local utils = require('sapnvim_project.utils')
 local session_manager = require('sapnvim_project.session_manager')
+local fzf_lua = require('sapnvim_project.picker.fzf_lua')
 
 local project = {}
 
@@ -71,7 +72,7 @@ function project.create_project()
   end)
 end
 
-function project.save_project()
+function project.save_project(opts)
   local old_session = get_current_cwd_info()
   if not session_manager.save_existing_session(old_session) then
     vim.notify("The workspace is not an existing project, run ProjectAdd command!", vim.log.levels.WARN)
@@ -89,7 +90,12 @@ function project.project_preselector(opts)
     session_manager.create_history_session(selected_session, true, true)
   end
 
-  telescope.extensions['sapnvim_project'].select(opts)
+  if opts.picker == 'fzf-lua' then
+    fzf_lua.select_session(opts.picker_opts)
+  end
+  if opts.picker == 'telescope' then
+    telescope.extensions['sapnvim_project'].select(opts)
+  end
 end
 
 function project.close_project()

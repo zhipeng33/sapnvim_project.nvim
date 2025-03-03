@@ -15,9 +15,6 @@ local utils = require('sapnvim_project.utils')
 
 local function create_finder()
   local sessions = session_manager.get_all_sessions() or {}
-  if sessions == nil then
-    vim.notify("Error: Failed to get the file name of the telescope results.", vim.log.levels.ERROR)
-  end
 
   local displayer = entry_display.create({
     separator = " ",
@@ -55,7 +52,8 @@ local function select_session(opts)
         actions.close(prompt_bufnr)
         local selection = action_state.get_selected_entry()
         vim.cmd('silent! %bd!')
-        session_manager.load_session(selection)
+        local session = { name = selection.name, path = selection.value }
+        session_manager.load_session(session)
       end)
       return true
     end

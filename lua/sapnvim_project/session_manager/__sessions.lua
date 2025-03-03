@@ -103,8 +103,8 @@ end
 --- Loads a session.
 --- Closes all buffers, checks the session path using utils.is_valid_path,
 --- and sources the session file from config.defaults.sessions_storage_dir.
----@param selected_session { name: string, path: string }? table
----@return boolean # if loaded, false otherwise.
+---@param selected_session table { name: string, path: string }
+---@return boolean true if loaded, false otherwise.
 function sessions.load_session(selected_session)
   if not selected_session then
     error("Parameters must be passed!")
