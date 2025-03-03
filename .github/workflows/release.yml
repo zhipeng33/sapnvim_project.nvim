@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 重要：确保获取完整的提交历史
 
       - name: Set up Git
         run: |
@@ -24,21 +26,9 @@ jobs:
         id: release
         with:
           release-type: simple
-          package-name: sapnvim_project.nvim
-          token: ${{ secrets.GITHUB_TOKEN }} # 使用 GitHub Token
-          changelog-types: |
-            [
-              {"type":"feat","section":"Features","hidden":false},
-              {"type":"fix","section":"Bug Fixes","hidden":false},
-              {"type":"docs","section":"Documentation","hidden":false},
-              {"type":"style","section":"Styling","hidden":false},
-              {"type":"refactor","section":"Code Refactoring","hidden":false},
-              {"type":"perf","section":"Performance","hidden":false},
-              {"type":"test","section":"Tests","hidden":false},
-              {"type":"build","section":"Build System","hidden":false},
-              {"type":"ci","section":"CI","hidden":false},
-              {"type":"chore","section":"Chores","hidden":false}
-            ]
+          token: ${{ secrets.GITHUB_TOKEN }}
+          config-file: .release-please-config.json
+          # 删除了不支持的参数: package-name 和 changelog-types
 
       # 添加一个稳定标签指向最新发布版本
       - name: Tag stable version
