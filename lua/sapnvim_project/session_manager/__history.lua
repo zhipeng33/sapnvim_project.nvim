@@ -10,7 +10,7 @@ local history_table = {}
 --- load_history_from_file
 --- Load historical data from the data file and update the local history_table.
 ---@return { name: string, path: string }[] history_table Returns the history table.
-local function load_history_form_file()
+local function load_history_from_file()
   local data = storage.load_data_form_file()
   if data.history then
     history_table = data.history
@@ -31,9 +31,9 @@ local function is_duplicate_session(history_session)
   return false
 end
 
-local function keep_only_two(history_session)
-  table.insert(history_table, history_session)
-  if #history_table > 2 then
+local function limit_history_size(new_session)
+  table.insert(history_table, new_session)
+  if #history_table > 1 then
     table.remove(history_table, 1)
   end
 end
@@ -43,7 +43,7 @@ end
 --- Load the latest data from the data file before each call.
 ---@return { name: string, path: string }[] history_table Return the history table.
 function history.get_history_sessions()
-  return load_history_form_file()
+  return load_history_from_file()
 end
 
 function history.create_history_session(history_session, save, insert)
@@ -54,7 +54,7 @@ function history.create_history_session(history_session, save, insert)
     local data = storage.load_data_form_file()
 
     if not is_duplicate_session(history_session) then
-      keep_only_two(history_session)
+      limit_history_size(history_session)
     end
 
     data.history = history_table
