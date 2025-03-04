@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/sapnvim/sapnvim_project.nvim/compare/v1.0.0...v1.1.0) (2025-03-04)
+
+
+### Features
+
+* **autocmd:** implement auto session restore feature ([9aea10b](https://github.com/sapnvim/sapnvim_project.nvim/commit/9aea10b7e60e02a6c06e4281681980609d7311c3))
+
+
+### Bug Fixes
+
+* **project:** ensure existing projects are saved to history when closed ([846225f](https://github.com/sapnvim/sapnvim_project.nvim/commit/846225f629a7b16a1e4d99983f6ba2dd3aecf2ad))
+
 ## 1.0.0 (2025-03-03)
 
 
