@@ -35,7 +35,7 @@ end
 ---
 ---@param session { name: string, path: string }? The path used to check against existing sessions.
 ---@return { name: string, path: string }? s Returns the matching session table if found, otherwise nil.
-local function session_exists_is_cache(session)
+function sessions.session_exists_is_cache(session)
   if not session then
     error("Parameters must be passed!")
   end
@@ -88,7 +88,7 @@ function sessions.save_existing_sessin(old_session)
   if not old_session then
     error("Parameters must be passed!")
   end
-  local existing = session_exists_is_cache(old_session)
+  local existing = sessions.session_exists_is_cache(old_session)
   -- vim.notify(vim.inspect(existing))
   -- vim.notify(vim.inspect(sessions_table))
   if not existing then

@@ -23,6 +23,7 @@ M.defaults = {
   sessions_storage_dir = utils.add_slash_if_folder(get_default_storage_dir()),
   sessions_data_filename = 'sessions_data.lua',
   sessionoptions = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp", "folds" },
+  auto_session_restore = 'none',
   picker = 'fzf-lua',
   picker_opts = {
   }
@@ -70,6 +71,13 @@ M.setup = function(user_config)
   local picker = { 'telescope', 'fzf-lua' }
   if not vim.tbl_contains(picker, config.picker) then
     error(string.format("%s is an invalid selector, defaults %s", config.picker, vim.inspect(picker)))
+  end
+
+  local valid_restore_options = { 'last', 'current', 'none' }
+  if not vim.tbl_contains(valid_restore_options, config.auto_session_restore) then
+    error(string.format("%s is an invalid auto_session_restore option, valid options: %s",
+      config.auto_session_restore,
+      vim.inspect(valid_restore_options)))
   end
 
   vim.opt.sessionoptions = config.sessionoptions

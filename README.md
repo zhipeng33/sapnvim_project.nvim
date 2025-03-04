@@ -31,6 +31,7 @@ This plugin adds a project management function to nvim, which allows you to jump
 - Automatically save open buffers, window layouts, cursor positions and other working states
 - Support custom session save options to control the specific content that needs to be saved
 - Record project access history to facilitate quick navigation between frequently used projects
+- **Auto Session Restore** - Automatically load sessions on startup based on configuration
 
 
 ## Install
@@ -60,6 +61,13 @@ return {
     --- View details :h sessionoptions
     sessionoptions = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp", "folds" },
 
+    --- Controls how sessions are restored on startup:
+    --- 'last' - Load the most recent session
+    --- 'current' - Load session matching the current directory
+    --- 'none' - Disable auto-restore (default)
+    auto_session_restore = 'none',
+
+    -- Useing telescope
     picker = 'telescope'
 
     --- telescope config
@@ -97,6 +105,12 @@ return {
       --- This is a setting related to session saving in Vim/Neovim
       --- View details :h sessionoptions
       sessionoptions = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp", "folds" },
+
+      --- Controls how sessions are restored on startup:
+      --- 'last' - Load the most recent session
+      --- 'current' - Load session matching the current directory
+      --- 'none' - Disable auto-restore (default)
+      auto_session_restore = 'none',
 
       -- Useing fzf-lua
       picker = 'fzf-lua',
@@ -148,3 +162,11 @@ vim.keymap.set('n', '<leader>sw', '<cmd>ProjectSave<cr>', { desc = 'Save exists 
 vim.keymap.set('n', '<leader>sf', '<cmd>ProjectLoad<cr>', { desc = 'Load project in list'})
 vim.keymap.set('n', '<leader>st', '<cmd>ProjectToggle<cr>', { desc = 'Toggle between recent projects'})
 ```
+
+## Configuration Options
+
+### auto_session_restore
+Controls how sessions are restored when Neovim starts:
+- `'last'`: Automatically loads the most recent session regardless of current directory
+- `'current'`: Loads a session matching the current directory if one exists
+- `'none'`: Disables automatic session restoration (default)

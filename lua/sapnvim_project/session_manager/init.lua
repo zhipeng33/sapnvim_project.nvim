@@ -3,6 +3,15 @@ local history = require('sapnvim_project.session_manager.__history')
 
 local session_manager = {}
 
+--- session_exists_in_cache
+--- Checks if a session already exists in the sessions_table based on the provided path.
+---
+--- Iterates through sessions_table to find a session whose "path" field matches the provided path.
+---
+---@param session { name: string, path: string }? The path used to check against existing sessions.
+---@return { name: string, path: string }? s Returns the matching session table if found, otherwise nil.
+session_manager.session_exists_is_cache = sessions.session_exists_is_cache
+
 --- get_all_sessions
 --- Retrieves all stored session records.
 ---
